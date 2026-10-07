@@ -95,7 +95,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_10%_100%,rgba(201,148,69,0.08),transparent_70%)]" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
       </div>
-      <Particles className="-z-10" />
+      {ready && <Particles className="-z-10" />}
 
       <div className="container-luxe relative grid flex-1 grid-cols-1 items-center gap-6 pb-24 pt-6 lg:grid-cols-12 lg:gap-8 lg:pb-28">
         {/* Visual */}
@@ -148,7 +148,7 @@ export function Hero() {
                 lines={[
                   "Presentes que encantam.",
                   <>
-                    Momentos que <em className="gold-text animate-shimmer font-normal italic">ficam.</em>
+                    Momentos que <em className="gold-text animate-shimmer-once font-normal italic">ficam.</em>
                   </>,
                 ]}
               />

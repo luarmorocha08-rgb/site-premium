@@ -62,6 +62,18 @@ export function Particles({ className = "", density = 1 }: { className?: string;
       });
     };
 
+    // Pre-rendered glow sprite: drawing an image is far cheaper than building a gradient per dot per frame.
+    const SPRITE = 32;
+    const sprite = document.createElement("canvas");
+    sprite.width = sprite.height = SPRITE;
+    const sctx = sprite.getContext("2d")!;
+    const g = sctx.createRadialGradient(SPRITE / 2, SPRITE / 2, 0, SPRITE / 2, SPRITE / 2, SPRITE / 2);
+    g.addColorStop(0, "rgba(244, 214, 150, 1)");
+    g.addColorStop(0.35, "rgba(201, 148, 69, 0.45)");
+    g.addColorStop(1, "rgba(201, 148, 69, 0)");
+    sctx.fillStyle = g;
+    sctx.fillRect(0, 0, SPRITE, SPRITE);
+
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
       pointer.x += (pointer.tx - pointer.x) * 0.04;
@@ -76,18 +88,11 @@ export function Particles({ className = "", density = 1 }: { className?: string;
         if (d.x < -10) d.x = w + 10;
         if (d.x > w + 10) d.x = -10;
         const twinkle = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * 0.0012 + d.phase));
-        const px = d.x + pointer.x * d.z * 18;
-        const py = d.y + pointer.y * d.z * 18;
-        const alpha = (0.15 + d.z * 0.55) * twinkle;
-        const g = ctx.createRadialGradient(px, py, 0, px, py, d.r * 4);
-        g.addColorStop(0, `rgba(244, 214, 150, ${alpha})`);
-        g.addColorStop(0.35, `rgba(201, 148, 69, ${alpha * 0.45})`);
-        g.addColorStop(1, "rgba(201, 148, 69, 0)");
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(px, py, d.r * 4, 0, Math.PI * 2);
-        ctx.fill();
+        const size = d.r * 8;
+        ctx.globalAlpha = (0.15 + d.z * 0.55) * twinkle;
+        ctx.drawImage(sprite, d.x + pointer.x * d.z * 18 - size / 2, d.y + pointer.y * d.z * 18 - size / 2, size, size);
       }
+      ctx.globalAlpha = 1;
       raf = requestAnimationFrame(draw);
     };
 

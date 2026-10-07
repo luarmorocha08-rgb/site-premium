@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { nav, site, whatsappLink } from "@/lib/site";
 import { useReady } from "@/hooks/useReady";
@@ -10,8 +9,6 @@ import { Logo } from "@/components/visuals/Logo";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Instagram, WhatsApp } from "@/components/ui/Icons";
 import { useLenis } from "./SmoothScroll";
-
-const ease = [0.16, 1, 0.3, 1] as const;
 
 export function Header() {
   const ready = useReady();
@@ -57,7 +54,7 @@ export function Header() {
         } ${ready ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"}`}
       >
         <div className="container-luxe flex h-[72px] items-center justify-between gap-6 lg:h-[84px]">
-          <Link href="/" aria-label={`${site.name} — página inicial`} className="relative z-10" data-header-logo>
+          <Link href="/" title="Página inicial" className="relative z-10" data-header-logo>
             <Logo />
           </Link>
 
@@ -113,69 +110,52 @@ export function Header() {
         </div>
       </header>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            id="mobile-menu"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menu"
-            className="fixed inset-0 z-40 flex flex-col bg-ink lg:hidden"
-            initial={{ clipPath: "inset(0 0 100% 0)" }}
-            animate={{ clipPath: "inset(0 0 0% 0)" }}
-            exit={{ clipPath: "inset(0 0 100% 0)" }}
-            transition={{ duration: 0.9, ease }}
+      <div
+        id="mobile-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu"
+        data-open={open}
+        inert={!open}
+        className="mobile-menu fixed inset-0 z-40 flex flex-col bg-ink lg:hidden"
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-1/3 h-[70vw] w-[70vw] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(201,148,69,0.18),transparent_65%)]"
+        />
+        <nav aria-label="Menu móvel" className="container-luxe relative flex flex-1 flex-col justify-center pt-20">
+          <ul className="space-y-1">
+            {nav.map((item, i) => (
+              <li key={item.href} className="overflow-hidden">
+                <div className="menu-item" style={{ transitionDelay: open ? `${0.15 + i * 0.06}s` : "0s" }}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="flex items-baseline gap-5 py-2 font-serif text-[2.6rem] font-light leading-tight text-ivory"
+                  >
+                    <span className="font-sans text-[0.6rem] tracking-[0.3em] text-gold">0{i + 1}</span>
+                    {item.label}
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="menu-foot container-luxe relative space-y-6 pb-10">
+          <div className="hairline" />
+          <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="btn btn-gold w-full">
+            <WhatsApp /> Falar pelo WhatsApp
+          </a>
+          <a
+            href={site.instagram.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-3 text-[0.7rem] uppercase tracking-[0.22em] text-champagne/80"
           >
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute left-1/2 top-1/3 h-[70vw] w-[70vw] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(201,148,69,0.18),transparent_65%)]"
-            />
-            <nav aria-label="Menu móvel" className="container-luxe relative flex flex-1 flex-col justify-center pt-20">
-              <ul className="space-y-1">
-                {nav.map((item, i) => (
-                  <li key={item.href} className="overflow-hidden">
-                    <motion.div
-                      initial={{ y: "110%" }}
-                      animate={{ y: 0 }}
-                      exit={{ y: "110%" }}
-                      transition={{ duration: 0.9, ease, delay: 0.15 + i * 0.06 }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={() => setOpen(false)}
-                        className="flex items-baseline gap-5 py-2 font-serif text-[2.6rem] font-light leading-tight text-ivory"
-                      >
-                        <span className="text-[0.6rem] font-sans tracking-[0.3em] text-gold">0{i + 1}</span>
-                        {item.label}
-                      </Link>
-                    </motion.div>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-            <motion.div
-              className="container-luxe relative space-y-6 pb-10"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8, ease, delay: 0.55 }}
-            >
-              <div className="hairline" />
-              <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="btn btn-gold w-full">
-                <WhatsApp /> Falar pelo WhatsApp
-              </a>
-              <a
-                href={site.instagram.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 text-[0.7rem] uppercase tracking-[0.22em] text-champagne/80"
-              >
-                <Instagram /> {site.instagram.handle}
-              </a>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <Instagram /> {site.instagram.handle}
+          </a>
+        </div>
+      </div>
     </>
   );
 }

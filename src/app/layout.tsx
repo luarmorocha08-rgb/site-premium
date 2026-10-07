@@ -87,11 +87,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className={`${serif.variable} ${sans.variable} ${script.variable}`} suppressHydrationWarning>
       <head>
-        {/* Enables reveal states only when JS runs; failsafe shows content if hydration never happens. */}
+        {/* Enables reveal states only when JS runs; skips the intro on repeat views in the same session;
+            failsafe shows content if hydration never happens. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "document.documentElement.classList.add('js');setTimeout(function(){if(!window.__bpReady){document.documentElement.classList.add('bp-fallback')}},6000);",
+              "var d=document.documentElement;d.classList.add('js');try{if(sessionStorage.getItem('bp-intro'))d.classList.add('intro-seen')}catch(e){}setTimeout(function(){if(!window.__bpReady){d.classList.add('bp-fallback')}},6000);",
           }}
         />
         <noscript>

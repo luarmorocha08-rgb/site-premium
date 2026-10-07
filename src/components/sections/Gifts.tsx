@@ -18,15 +18,14 @@ export function Gifts() {
       const mm = gsap.matchMedia();
       mm.add(MQ.motion, () => {
         gsap.utils.toArray<HTMLElement>("[data-phrase]").forEach((el) => {
+          // Masked rise tied to scroll: text is either clipped or fully legible, never dimmed.
           gsap.fromTo(
-            el,
-            { opacity: 0.08, x: -24, filter: "blur(4px)" },
+            el.querySelector(".line-inner"),
+            { y: 0, yPercent: 110 },
             {
-              opacity: 1,
-              x: 0,
-              filter: "blur(0px)",
+              yPercent: 0,
               ease: "none",
-              scrollTrigger: { trigger: el, start: "top 85%", end: "top 50%", scrub: 0.6 },
+              scrollTrigger: { trigger: el, start: "top 88%", end: "top 58%", scrub: 0.6 },
             },
           );
           gsap.fromTo(
@@ -83,7 +82,11 @@ export function Gifts() {
           <ul className="mt-16 lg:mt-24">
             {phrases.map((p) => (
               <li key={p} data-phrase className="border-t border-ivory/10 py-8 lg:py-14">
-                <p className="display text-[clamp(2.2rem,4.4vw,3.8rem)] text-ivory">{p}</p>
+                <p className="display text-[clamp(2.2rem,4.4vw,3.8rem)] text-ivory">
+                  <span className="line-mask">
+                    <span className="line-inner">{p}</span>
+                  </span>
+                </p>
                 <span data-phrase-line aria-hidden="true" className="mt-5 block h-px w-24 origin-left bg-gold" />
               </li>
             ))}

@@ -25,7 +25,7 @@ export function ProductCard({ product, priority = false }: { product: Product; p
             <ProductArt product={product} className={tall ? "h-full w-auto" : "h-auto w-full"} />
           </div>
         </div>
-        <span className="absolute left-5 top-5 text-[0.58rem] uppercase tracking-[0.28em] text-ivory/45">
+        <span className="absolute left-5 top-5 text-[0.58rem] uppercase tracking-[0.28em] text-ivory/60">
           {categories[product.category].label}
         </span>
         <span className="absolute inset-x-5 bottom-5 flex translate-y-0 items-center justify-center gap-3 border border-gold/40 bg-ink/70 py-3 text-[0.6rem] uppercase tracking-[0.24em] text-gold-light opacity-100 backdrop-blur-md transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] [@media(hover:hover)]:translate-y-3 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:opacity-100">

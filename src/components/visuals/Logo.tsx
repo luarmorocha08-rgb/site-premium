@@ -42,7 +42,7 @@ export function Logo({ className = "", compact = false }: { className?: string; 
       <Monogram className="h-10 w-10 shrink-0" />
       {!compact && (
         <span className="flex flex-col leading-none">
-          <span className="font-script text-[1.65rem] leading-[0.9] text-champagne">Bárbara</span>
+          <span className="font-script text-[1.65rem] leading-[0.9] text-champagne">Bárbara</span>{" "}
           <span className="mt-1 text-[0.5rem] font-medium tracking-[0.5em] text-gold">PRESENTES</span>
         </span>
       )}

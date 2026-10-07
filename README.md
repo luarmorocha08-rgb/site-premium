@@ -2,7 +2,7 @@
 
 Site da **Bárbara Presentes** (perfumaria, cosméticos e presentes): boutique digital com direção de arte cinematográfica, animações de scroll e foco em conversão via WhatsApp/Instagram.
 
-**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · GSAP + ScrollTrigger · Lenis (smooth scroll) · Motion (Framer Motion)
+**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · GSAP + ScrollTrigger · Lenis (smooth scroll)
 
 ## Rodando
 
@@ -39,13 +39,18 @@ NEXT_PUBLIC_SITE_URL=https://seu-dominio.com.br
 
 ## Experiência
 
-- Intro de ~2,3s: monograma desenhado → brilho dourado → logo desliza até o header.
+- Intro de ~2,5s (uma vez por sessão): monograma desenhado em CSS desde o primeiro paint → brilho dourado → logo desliza até o header.
 - Hero 100vh com frasco flutuante, luz dourada, partículas (canvas) e parallax pelo mouse.
 - Seção cinematográfica com sticky scroll em 5 cenas (escuridão → luz → revelação → texto → CTA), totalmente atrelada ao progresso do scroll.
 - Reveals declarativos via atributos: `data-reveal="up|fade|left|right|clip|lines|draw|stagger"`, `data-delay`, `data-speed` (parallax) — ver `src/components/layout/Reveals.tsx`.
 - Cursor customizado e botões magnéticos apenas em desktop com ponteiro fino.
 
 ## Performance e acessibilidade
+
+Lighthouse (build de produção): **desktop 95 · acessibilidade 100 · boas práticas 100 · SEO 100**; mobile (CPU 4× mais lenta) 70 na home e 81 em produto, com acessibilidade/boas práticas/SEO em 100. No mobile o LCP (~4s) é dominado pela intro de marca — por isso ela só toca na primeira visita da sessão.
+
+- Reveals de scroll via IntersectionObserver (sem leituras de layout); ScrollTrigger só nas cenas com scrub.
+- Transições de página, menu mobile e quiz em CSS puro — sem biblioteca de animação extra no bundle.
 
 - Nenhuma imagem raster na home: ilustrações em SVG inline, fontes via `next/font` (self-hosted, variáveis).
 - Partículas reduzidas no mobile e em dispositivos fracos (`deviceMemory`/`hardwareConcurrency`/`saveData`), pausadas fora da tela.

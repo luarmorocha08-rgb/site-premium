@@ -1,7 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { families, products, type Family } from "@/data/products";
 import { whatsappLink } from "@/lib/site";
 import { ScrollTrigger } from "@/lib/gsap";
@@ -79,6 +78,11 @@ export function FragranceFinder() {
         .slice(0, 3)
     : [];
 
+  // The result panel changes page height: keep scroll-driven sections in sync.
+  useEffect(() => {
+    if (revealed) requestAnimationFrame(() => ScrollTrigger.refresh());
+  }, [revealed, selected]);
+
   const discover = () => {
     if (!selected) {
       setHint(true);
@@ -150,18 +154,12 @@ export function FragranceFinder() {
           </p>
         </div>
 
-        <AnimatePresence mode="wait">
-          {revealed && fam && (
-            <motion.div
+        {revealed && fam && (
+            <div
               key={fam.id}
               id="finder-result"
               tabIndex={-1}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              onAnimationComplete={() => ScrollTrigger.refresh()}
-              className="mt-16 border-t border-gold/15 pt-14 outline-none"
+              className="animate-rise mt-16 border-t border-gold/15 pt-14 outline-none"
             >
               <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                 <div>
@@ -184,9 +182,8 @@ export function FragranceFinder() {
                   <ProductCard key={p.slug} product={p} />
                 ))}
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
       </div>
     </section>
   );

@@ -14,8 +14,11 @@ const HEADER_OFFSET = -72;
 export function scrollToHash(hash: string, lenis: Lenis | null, immediate = false) {
   const el = hash && hash !== "#" ? document.querySelector<HTMLElement>(hash) : null;
   if (!el) return false;
-  if (lenis) lenis.scrollTo(el, { offset: HEADER_OFFSET, duration: immediate ? 0 : 1.6, immediate });
-  else el.scrollIntoView({ behavior: immediate ? "auto" : "smooth" });
+  if (lenis) {
+    // After a route change Lenis may still hold the previous page's scroll limit.
+    lenis.resize();
+    lenis.scrollTo(el, { offset: HEADER_OFFSET, duration: immediate ? 0 : 1.6, immediate });
+  } else el.scrollIntoView({ behavior: immediate ? "auto" : "smooth" });
   return true;
 }
 

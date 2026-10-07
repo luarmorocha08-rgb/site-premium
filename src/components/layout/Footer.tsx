@@ -63,25 +63,24 @@ export function Footer() {
                   <Instagram className="h-4 w-4 text-gold" /> {site.instagram.handle}
                 </a>
               </li>
-              <li className="pt-2 text-[0.78rem] leading-relaxed text-ivory/45">Pedidos pelo direct do Instagram ou WhatsApp.</li>
+              <li className="pt-2 text-[0.78rem] leading-relaxed text-ivory/60">Pedidos pelo direct do Instagram ou WhatsApp.</li>
             </ul>
           </div>
         </div>
 
         <div aria-hidden="true" className="hairline mt-20" />
-        <div className="flex flex-col items-center justify-between gap-4 py-8 text-[0.66rem] uppercase tracking-[0.18em] text-ivory/35 sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 py-8 text-[0.66rem] uppercase tracking-[0.18em] text-ivory/55 sm:flex-row">
           <p>
             © {year} {site.name}. Todos os direitos reservados.
           </p>
           <p>Perfumes · Cosméticos · Presentes</p>
         </div>
       </div>
-      <p
-        aria-hidden="true"
-        className="pointer-events-none select-none overflow-hidden text-center font-script text-[24vw] leading-[0.8] text-ivory/[0.03]"
-      >
-        Bárbara
-      </p>
+      <svg aria-hidden="true" viewBox="0 0 1000 230" className="pointer-events-none w-full select-none">
+        <text x="500" y="200" textAnchor="middle" fontSize="260" fill="#f7f4ee" fillOpacity="0.03" style={{ fontFamily: "var(--font-script)" }}>
+          Bárbara
+        </text>
+      </svg>
     </footer>
   );
 }

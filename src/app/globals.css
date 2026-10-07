@@ -243,6 +243,11 @@
 }
 
 /* Grain overlay */
+@media (pointer: coarse) {
+  .grain::after {
+    display: none;
+  }
+}
 .grain::after {
   content: "";
   position: fixed;
@@ -278,6 +283,11 @@
 .animate-shimmer {
   animation: shimmer 6s linear infinite;
 }
+/* A single sweep after the intro — avoids repainting the headline forever. */
+.animate-shimmer-once {
+  background-position: 100% 0;
+  animation: shimmer 3.2s 3.4s ease-in-out both;
+}
 @keyframes scroll-cue {
   0% {
     transform: scaleY(0);
@@ -312,6 +322,7 @@
 }
 .animate-glow {
   animation: glow-pulse 5s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 /* Hide scrollbar for sliders */
@@ -383,4 +394,112 @@
   .slider-pad {
     --pad: max(4rem, calc((100vw - 1360px) / 2 + 4rem));
   }
+}
+
+/* Page transition */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+}
+.page-enter {
+  animation: page-enter 0.9s var(--ease) both;
+}
+
+/* Generic entrance used by client-side swaps (quiz result…) */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+.animate-rise {
+  animation: rise-in 1s var(--ease) both;
+}
+
+/* Mobile menu */
+.mobile-menu {
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  transition:
+    clip-path 0.9s var(--ease),
+    visibility 0s linear 0.9s;
+}
+.mobile-menu[data-open="true"] {
+  clip-path: inset(0 0 0% 0);
+  visibility: visible;
+  transition:
+    clip-path 0.9s var(--ease),
+    visibility 0s;
+}
+.mobile-menu .menu-item {
+  transform: translateY(110%);
+  transition: transform 0.9s var(--ease);
+}
+.mobile-menu[data-open="true"] .menu-item {
+  transform: none;
+}
+.mobile-menu .menu-foot {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 0.8s var(--ease);
+}
+.mobile-menu[data-open="true"] .menu-foot {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.55s;
+}
+
+/* Intro — runs from first paint, before hydration */
+@keyframes intro-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes intro-word {
+  from {
+    opacity: 0;
+    letter-spacing: 0.9em;
+  }
+}
+@keyframes intro-sweep {
+  from {
+    transform: translateX(-160%) skewX(-12deg);
+  }
+  to {
+    transform: translateX(260%) skewX(-12deg);
+  }
+}
+.intro-logo [data-logo-ring] {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: intro-draw 0.9s 0.05s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+.intro-logo [data-logo-bow] path {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: intro-draw 0.7s 0.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+.intro-logo [data-logo-letter] {
+  animation: intro-fade 0.9s 0.2s var(--ease) both;
+}
+.intro-word {
+  animation: intro-word 0.9s 0.45s var(--ease) both;
+}
+.intro-shine {
+  transform: translateX(-160%) skewX(-12deg);
+  animation: intro-sweep 0.85s 0.85s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+/* Intro already played this session */
+.intro-seen .bp-preloader {
+  display: none;
 }

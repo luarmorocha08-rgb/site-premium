@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 828, 1080, 1280, 1600, 1920],
   },
   experimental: {
-    optimizePackageImports: ["gsap", "motion"],
+    optimizePackageImports: ["gsap"],
   },
 };
 

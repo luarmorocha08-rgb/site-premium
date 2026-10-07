@@ -6,7 +6,7 @@ import { markReady } from "@/hooks/useReady";
 import { Monogram } from "@/components/visuals/Logo";
 
 /**
- * Intro (~2.3s): black → monogram draws itself → gold light sweeps the logo →
+ * Intro (~2.5s): black → monogram draws itself → gold light sweeps the logo →
  * logo glides into the header position → page is revealed.
  */
 export function Preloader() {
@@ -20,10 +20,19 @@ export function Preloader() {
     if (!el || !mark) return;
 
     const finish = () => {
+      try {
+        sessionStorage.setItem("bp-intro", "1");
+      } catch {}
       document.documentElement.style.removeProperty("overflow");
       markReady();
       setDone(true);
     };
+
+    // Already seen in this session: the page shows straight away (CSS hides the overlay).
+    if (document.documentElement.classList.contains("intro-seen")) {
+      finish();
+      return;
+    }
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       gsap.to(el, { autoAlpha: 0, duration: 0.3, onComplete: finish });
@@ -31,21 +40,15 @@ export function Preloader() {
     }
 
     document.documentElement.style.overflow = "hidden";
-    const ring = mark.querySelector("[data-logo-ring]");
-    const letter = mark.querySelector("[data-logo-letter]");
-    const bow = mark.querySelectorAll("[data-logo-bow] path");
-    const shine = mark.querySelector("[data-shine]");
     const word = el.querySelector("[data-word]");
 
-    const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-    tl.set(ring, { strokeDasharray: 1, strokeDashoffset: 1 })
-      .set(bow, { strokeDasharray: 60, strokeDashoffset: 60 })
-      .to(ring, { strokeDashoffset: 0, duration: 1.1, ease: "power2.inOut" }, 0.1)
-      .fromTo(letter, { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 1 }, 0.3)
-      .to(bow, { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut", stagger: 0.08 }, 0.5)
-      .fromTo(word, { autoAlpha: 0, letterSpacing: "0.9em" }, { autoAlpha: 1, letterSpacing: "0.55em", duration: 1 }, 0.6)
-      .fromTo(shine, { xPercent: -160 }, { xPercent: 160, duration: 0.9, ease: "power2.inOut" }, 1.05)
-      .to(word, { autoAlpha: 0, duration: 0.4 }, 1.55)
+    // The draw-in + light sweep run in CSS from first paint (see globals.css), so the intro
+    // overlaps hydration instead of waiting for it. JS only plays the hand-off to the header.
+    const INTRO_MS = 1800;
+    const wait = Math.max(0, INTRO_MS - performance.now()) / 1000;
+
+    const tl = gsap.timeline({ delay: wait, defaults: { ease: "expo.out" } });
+    tl.to(word, { autoAlpha: 0, duration: 0.4 }, 0)
       .add(() => {
         const target = document.querySelector<HTMLElement>("[data-header-logo]");
         const from = mark.getBoundingClientRect();
@@ -61,11 +64,11 @@ export function Preloader() {
         } else {
           gsap.to(mark, { autoAlpha: 0, scale: 0.9, duration: 0.6 });
         }
-      }, 1.6)
-      .to(el, { backgroundColor: "rgba(5,5,5,0)", duration: 0.7, ease: "power2.inOut" }, 1.85)
-      .add(markReady, 1.95)
-      .to(mark, { autoAlpha: 0, duration: 0.3 }, 2.35)
-      .add(finish, 2.45);
+      }, 0.05)
+      .to(el, { backgroundColor: "rgba(5,5,5,0)", duration: 0.7, ease: "power2.inOut" }, 0.3)
+      .add(markReady, 0.4)
+      .to(mark, { autoAlpha: 0, duration: 0.3 }, 0.8)
+      .add(finish, 0.9);
 
     return () => {
       tl.kill();
@@ -82,14 +85,14 @@ export function Preloader() {
       className="bp-preloader fixed inset-0 z-[100] flex flex-col items-center justify-center bg-ink"
       style={{ pointerEvents: "none" }}
     >
-      <div ref={logo} className="relative h-24 w-24 overflow-hidden rounded-full">
+      <div ref={logo} className="intro-logo relative h-24 w-24 overflow-hidden rounded-full">
         <Monogram className="h-full w-full" />
         <span
           data-shine
-          className="absolute inset-y-0 -left-1/4 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-[#fff3d0]/70 to-transparent mix-blend-overlay"
+          className="intro-shine absolute inset-y-0 -left-1/4 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-[#fff3d0]/70 to-transparent mix-blend-overlay"
         />
       </div>
-      <p data-word className="mt-8 pl-[0.55em] text-[0.62rem] font-medium uppercase tracking-[0.55em] text-champagne/80">
+      <p data-word className="intro-word mt-8 pl-[0.55em] text-[0.62rem] font-medium uppercase tracking-[0.55em] text-champagne/80">
         Bárbara Presentes
       </p>
     </div>
